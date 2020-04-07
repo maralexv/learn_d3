@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style type="text/css" media="screen">
+		#action:hover {
+           border: solid 1px black;
+        }
+	</style>
+</head>
+<body>
+	<h1>Hellow World!</h1>
+	<div>
+    	<p class="p1">Welcome</p>
+  	</div>
+  	<div>
+    	<p class= "p2">Don't forget to visit NYU</p>
+  	</div>
+  	<ul>
+  		
+  	</ul>
+  	<div id="action">
+  		Hover Me!
+	</div>
+</body>
+<script src="d3/d3.min.js"></script>
+<!-- <script src="https://d3js.org/d3.v5.js"></script> -->
+<script>
+
+  let cars = [ 
+    {name:"Toyota", price: 50000}, 
+    {name:"BMW", price:75000},                 
+    {name:"Tesla", price: 60000}, 
+    {name:"Jeep", price: 35000}
+  ];
+  let i;
+  for(i=0; i<cars.length; i++)    {  
+    console.log(cars[i].name);  
+  }
+
+  console.log(i)
+
+  function change(){
+    let p = d3.select("div").select("p")
+    p.text("Welcome to NY")
+  }
+
+  change()
+
+  let list = d3.select("ul");   
+	var carss = [ 
+  	{name:"Toyota", price: 50000}, 
+  	{name:"BMW", price:75000},
+  	{name:"Tesla", price: 60000}
+	];
+
+	function add(){
+  		for(let i=0; i<3; i++){
+  		list.append("li").text(carss[i].name) 
+  		}
+	}
+
+	add()
+	add()
+	console.log(list.selectAll("li").size())	
+
+</script>
+</html>

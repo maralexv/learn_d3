@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style type="text/css" media="screen">
+		* {
+			background: #121212;
+			color: white;
+		}
+		div {
+			border: solid 1px grey;
+		}
+	</style>
+</head>
+
+<body>
+	<div>
+		<h1>Hellow World!</h1>
+	</div>
+	<div id='container'>
+		
+	</div>
+
+</body>
+
+<script src="d3/d3.js"></script>
+<!-- <script src="https://d3js.org/d3.v5.js"></script> -->
+<script>
+	let container = d3.select('#container')
+
+	// load data from .csv file (can be .jason)
+	d3.csv('tips.csv').then(function (tips){
+		// sort the data by column tip
+		tips.sort(function (a,b) {
+			return d3.ascending(a.tip, b.tip)
+		})
+		// filters data to show only rows with tips < 2
+		tips = tips.filter(function (row) {
+			return row.tip < 2
+			})
+		// call function showData to actually depict data
+		showData(tips)
+	})
+
+	// function to depict data in DOM
+	function showData(data) {
+		// iterate over rows of data table 
+		for (let row of data) {
+			// write specific data form dataset into new divs 
+			// using write function (see below)
+			write(row.total_bill +', ' 
+				+ row.tip + ', ' 
+				+ row.sex + ', ' 
+				+ row.smoker + ', ' 
+				+ row.day + ', ' 
+				+ row.time)
+			}
+		}
+
+	// function to create a new div and wrtite text into it 
+	// we can call this func later or earlier in the code
+	function write (text) {
+		container.append('div').text(text)
+	}
+
+</script>
+
+</html>
