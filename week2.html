@@ -4,12 +4,14 @@
 	<title></title>
 	<style type="text/css" media="screen">
 		* {
-			background: #121212;
+			background: #021202;
 			color: white;
 		}
+
 		/*div {
 			border: solid 1px grey;
 		}*/
+
 	</style>
 </head>
 
@@ -71,6 +73,9 @@
 			}
 		write('-------------------------------')
 		write('Mean tip: ' + meanData(data))
+		
+		// highlight the last line with yellow text color
+		document.getElementById("container").lastChild.style.color = 'yellow'
 		}
 
 	// function to create a new div and wrtite text into it 
