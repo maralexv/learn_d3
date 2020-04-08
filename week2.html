@@ -7,9 +7,9 @@
 			background: #121212;
 			color: white;
 		}
-		div {
+		/*div {
 			border: solid 1px grey;
-		}
+		}*/
 	</style>
 </head>
 
@@ -26,21 +26,35 @@
 <script src="d3/d3.js"></script>
 <!-- <script src="https://d3js.org/d3.v5.js"></script> -->
 <script>
+	// d3 code for learning purpoces
+	// introducing constant that will be used in a function, which will transform the data
+	const multiplyer = 1.78
+
+	// selecting a div where JS manipulations will be happenning 
 	let container = d3.select('#container')
 
 	// load data from .csv file (can be .jason)
-	d3.csv('tips.csv').then(function (tips){
-		// sort the data by column tip
-		tips.sort(function (a,b) {
+	// then call function where data transformations happen
+	d3.csv('tips.csv').then(dataLoaded)
+
+	// data transformations
+	function dataLoaded (data){
+		// sort the data by column (column 'tip' in this case)
+		data.sort(function (a,b) {
 			return d3.ascending(a.tip, b.tip)
 		})
 		// filters data to show only rows with tips < 2
-		tips = tips.filter(function (row) {
+		data = data.filter(function (row) {
 			return row.tip < 2
 			})
-		// call function showData to actually depict data
-		showData(tips)
-	})
+		// transform data - map the data to new values
+		data = data.map(function (el) {
+			el.tip = dataTransform(el.tip)
+			return el
+		})
+		// call function showData to actually depict data in DOM
+		showData(data)
+	}
 
 	// function to depict data in DOM
 	function showData(data) {
@@ -55,12 +69,30 @@
 				+ row.day + ', ' 
 				+ row.time)
 			}
+		write('-------------------------------')
+		write('Mean tip: ' + meanData(data))
 		}
 
 	// function to create a new div and wrtite text into it 
 	// we can call this func later or earlier in the code
 	function write (text) {
 		container.append('div').text(text)
+	}
+
+	// data transformation with map 
+	function dataTransform (x) {
+		// multiplying the data point and 'truncating' to 2 decimals
+		x = (x * multiplyer).toFixed(2)
+		return x
+	}
+
+	// usgin reduce method (in this case to calculate the sum of all tips)
+	function meanData (data) {
+		let sum = data.reduce(function (prev, curr) {
+			return parseFloat(prev + parseFloat(curr.tip))
+		}, 0)
+		return (sum/data.length).toFixed(2)
+
 	}
 
 </script>
