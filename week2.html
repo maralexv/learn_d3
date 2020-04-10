@@ -4,33 +4,31 @@
 	<title></title>
 	<style type="text/css" media="screen">
 		* {
-			background: #021202;
+			background: #313638;
 			color: white;
 		}
 
-		/*div {
-			border: solid 1px grey;
-		}*/
-
 	</style>
+	<script src="d3/d3.js"></script>
+<!-- <script src="https://d3js.org/d3.v5.js"></script> -->
 </head>
 
 <body>
 	<div>
 		<h1>Hellow World!</h1>
+		<p>Working with csv table that contains data on tips in restaurants.</p>
+		<p>Here is sample of the data from the table:</p>
 	</div>
 	<div id='container'>
-		
-	</div>
 
+	</div>
 </body>
 
-<script src="d3/d3.js"></script>
-<!-- <script src="https://d3js.org/d3.v5.js"></script> -->
+
 <script>
 	// d3 code for learning purpoces
 	// introducing constant that will be used in a function, which will transform the data
-	const multiplyer = 1.78
+	const multiplyer = 1.00001
 
 	// selecting a div where JS manipulations will be happenning 
 	let container = d3.select('#container')
@@ -47,7 +45,7 @@
 		})
 		// filters data to show only rows with tips < 2
 		data = data.filter(function (row) {
-			return row.tip < 2
+			return row.tip < 1.5
 			})
 		// transform data - map the data to new values
 		data = data.map(function (el) {
@@ -75,13 +73,26 @@
 		write('Mean tip: ' + meanData(data))
 
 		write('-------------------------------')
-		// sum
-
+		write('Sample of simple statistical functions in d3.js:')
+		// sum (with function form, can also use => form -- see below)
+		let tipSum = d3.sum(data, function(row) {return row.tip}).toFixed(2)
+		write('Sum: ' + tipSum)
 
 		// mean
+		let tipMean = d3.mean(data, (row) => row.tip).toFixed(2)
+		write('Mean: ' + tipMean)
 
+		// range (extent) -- it returs an array > can't use toFixed() 
+		let tipRange = d3.extent(data, function(row) {return row.tip})
+		write('Min, Max: ' + tipRange)
 
-		// range (extent)
+		// variance
+		let tipVariance = d3.variance(data, (row) => row.tip).toFixed(4)
+		write('Variance: ' + tipVariance)
+
+		// standard deviation
+		let tipDeviation = d3.deviation(data, function(row) {return row.tip}).toFixed(4)
+		write('St. Deviation: ' + tipDeviation)
 		
 		}
 
