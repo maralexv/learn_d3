@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style type="text/css" media="screen">
+		* {
+			background: #313038;
+			color: white;
+		}
+
+	</style>
+	<script src="d3/d3.js"></script>
+<!-- <script src="https://d3js.org/d3.v5.js"></script> -->
+</head>
+
+<body>
+	<h1>Hellow World!</h1>
+	<div id='container'>
+		<p>Sample of data:</p>
+	</div>
+	<div id='viz'>
+		
+	</div>
+</body>
+
+
+<script>
+	// d3 code for learning purpoces
+
+	// selecting a div where JS manipulations will be happenning 
+	let container = d3.select('#container')
+	// selecting a div, where viz will be happenning
+	let viz = d3.select('#viz')
+
+	// load data from .csv file (can be .jason)
+	// then call function where data transformations happen
+	d3.csv('tips.csv').then(dataLoaded)
+
+	// data transformations
+	function dataLoaded (data){
+		// sort the data by column (column 'tip' in this case)
+		data.sort(function (a,b) {
+			return d3.ascending(a.tip, b.tip)
+		})
+		// call function showData to actually depict data in DOM
+		showViz(data)
+	}
+
+	// function to depict data in DOM
+	function showViz(data) {
+		// filters data... in thios case to show only rows with tips < 1.5
+		truncData = data.filter(function (row) {
+			return row.tip < 1.5
+			})
+		// iterate over rows of data table 
+		for (let row of truncData) {
+			// write specific data form dataset into new divs 
+			// using write function (see below)
+			write(row.total_bill +', ' 
+				+ row.tip + ', ' 
+				+ row.sex + ', ' 
+				+ row.smoker + ', ' 
+				+ row.day + ', ' 
+				+ row.time)
+			}
+
+		// function to create a new div and wrtite text into it 
+		// we can call this func later or earlier in the code
+		function write (text) {
+			container.append('div').text(text)
+		}	
+
+		// reformat array to group (nest) data by sex
+		let nestedData = d3.nest()
+			.key(function(d){return d.sex})
+			.entries(data)
+		console.log(nestedData)
+		console.log(nestedData[0].key)
+		console.log(nestedData[1].key)
+		console.log(nestedData[0].values)
+		console.log(nestedData[1].values)
+
+
+		// calculate average tip by Male and Female
+		let menTipMean = d3.mean(data, (row) => row.tip).toFixed(2)
+		let womenTipMean = d3.mean(data, (row) => row.tip).toFixed(2)
+
+		// bind data and div (or any othyer html container) 
+		// where the viz will be happening
+		join = viz.selectAll('div').data(nestedData)	
+		
+		// depict divs with average tip by Male and Female
+		join.enter().append('div')
+			.text(d => d.key)
+			.style('background-color', 'white')
+			.style('color', '#313038')
+			.style('margin-top', '10px')
+			.style('width', '300px')
+	}
+
+</script>
+
+</html>
