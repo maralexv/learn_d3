@@ -2,10 +2,12 @@
 <html>
 <head>
 	<title></title>
+	<link href="https://fonts.googleapis.com/css?family=Baloo+Paaji+2&display=swap" rel="stylesheet">
 	<style type="text/css" media="screen">
 		* {
 			background: #313038;
 			color: white;
+			font-family: 'Baloo Paaji 2';
 		}
 
 	</style>
@@ -34,7 +36,7 @@
 
 	// load data from .csv file (can be .jason)
 	// then call function where data transformations happen
-	d3.csv('tips.csv').then(dataLoaded)
+	d3.csv('tips1.csv').then(dataLoaded)
 
 	// data transformations
 	function dataLoaded (data){
@@ -74,12 +76,13 @@
 		let nestedData = d3.nest()
 			.key(function(d){return d.sex})
 			.entries(data)
+
+		// show the structure of theis new nested data object in console
 		console.log(nestedData)
 		console.log(nestedData[0].key)
 		console.log(nestedData[1].key)
 		console.log(nestedData[0].values)
 		console.log(nestedData[1].values)
-
 
 		// calculate average tip by Male and Female
 		let menTipMean = d3.mean(data, (row) => row.tip).toFixed(2)
@@ -92,7 +95,7 @@
 		// depict divs with average tip by Male and Female
 		join.enter().append('div')
 			.text(d => d.key)
-			.style('background-color', 'white')
+			.style('background-color', 'salmon')
 			.style('color', '#313038')
 			.style('margin-top', '10px')
 			.style('width', '300px')
