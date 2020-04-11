@@ -84,9 +84,20 @@
 		console.log(nestedData[0].values)
 		console.log(nestedData[1].values)
 
-		// calculate average tip by Male and Female
-		let menTipMean = d3.mean(data, (row) => row.tip).toFixed(2)
-		let womenTipMean = d3.mean(data, (row) => row.tip).toFixed(2)
+
+		// reduce data by sex and average tip
+
+		// dataReduced = data.reduce(function() {
+		// 	return none
+		// })
+
+		// calculate max tip
+		let max = d3.max(data, row => row.tip) 
+		console.log(max)
+
+		let scale = d3.scaleLinear()
+			.range([0, 300])
+			.domain([0, max])
 
 		// bind data and div (or any othyer html container) 
 		// where the viz will be happening
