@@ -4,7 +4,7 @@
 	<title></title>
 	<style type="text/css" media="screen">
 		* {
-			background: #313638;
+			background: #313038;
 			color: white;
 		}
 
@@ -14,8 +14,8 @@
 </head>
 
 <body>
+	<h1>Hellow World!</h1>
 	<div>
-		<h1>Hellow World!</h1>
 		<p>Working with csv table that contains data on tips in restaurants.</p>
 		<p>Here is sample of the data from the table:</p>
 	</div>
@@ -43,10 +43,6 @@
 		data.sort(function (a,b) {
 			return d3.ascending(a.tip, b.tip)
 		})
-		// filters data to show only rows with tips < 2
-		data = data.filter(function (row) {
-			return row.tip < 1.5
-			})
 		// transform data - map the data to new values
 		data = data.map(function (el) {
 			el.tip = dataTransform(el.tip)
@@ -58,8 +54,12 @@
 
 	// function to depict data in DOM
 	function showData(data) {
+		// filters data... in thios case to show only rows with tips < 1.5
+		truncData = data.filter(function (row) {
+			return row.tip < 1.5
+			})
 		// iterate over rows of data table 
-		for (let row of data) {
+		for (let row of truncData) {
 			// write specific data form dataset into new divs 
 			// using write function (see below)
 			write(row.total_bill +', ' 
@@ -115,7 +115,6 @@
 			return parseFloat(prev + parseFloat(curr.tip))
 		}, 0)
 		return (sum/data.length).toFixed(2)
-
 	}
 
 </script>
