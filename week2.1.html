@@ -50,22 +50,6 @@
 
 	// function to depict data in DOM
 	function showViz(data) {
-		// filters data... in thios case to show only rows with tips < 1.5
-		truncData = data.filter(function (row) {
-			return row.tip < 1.5
-			})
-		// iterate over rows of data table 
-		for (let row of truncData) {
-			// write specific data form dataset into new divs 
-			// using write function (see below)
-			write(row.total_bill +', ' 
-				+ row.tip + ', ' 
-				+ row.sex + ', ' 
-				+ row.smoker + ', ' 
-				+ row.day + ', ' 
-				+ row.time)
-			}
-
 		// function to create a new div and wrtite text into it 
 		// we can call this func later or earlier in the code
 		function write (text) {
@@ -75,21 +59,15 @@
 		// reformat array to group (nest) data by sex
 		let nestedData = d3.nest()
 			.key(function(d){return d.sex})
+			.rollup(function(values){return {
+				count: values.length, 
+				total: d3.sum(values, d => parseFloat(d.tip).toFixed(2)), 
+				mean: d3.mean(values, d => parseFloat(d.tip).toFixed(2))
+			}
+			})
 			.entries(data)
-
 		// show the structure of theis new nested data object in console
 		console.log(nestedData)
-		console.log(nestedData[0].key)
-		console.log(nestedData[1].key)
-		console.log(nestedData[0].values)
-		console.log(nestedData[1].values)
-
-
-		// reduce data by sex and average tip
-
-		// dataReduced = data.reduce(function() {
-		// 	return none
-		// })
 
 		// calculate max tip
 		let max = d3.max(data, row => row.tip) 
@@ -97,19 +75,21 @@
 
 		let scale = d3.scaleLinear()
 			.range([0, 300])
-			.domain([0, max])
+			.domain([0, max/2])
+
+		console.log(scale)
 
 		// bind data and div (or any othyer html container) 
 		// where the viz will be happening
-		join = viz.selectAll('div').data(nestedData)	
+		join = viz.selectAll('div').data(nestedData)
 		
 		// depict divs with average tip by Male and Female
 		join.enter().append('div')
-			.text(d => d.key)
+			.text(d => d.key + ': ' + d.value.mean.toFixed(2))
 			.style('background-color', 'salmon')
 			.style('color', '#313038')
 			.style('margin-top', '10px')
-			.style('width', '300px')
+			.style('width', scale(d => d.value.mean))
 	}
 
 </script>
