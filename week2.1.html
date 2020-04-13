@@ -5,9 +5,12 @@
 	<link href="https://fonts.googleapis.com/css?family=Baloo+Paaji+2&display=swap" rel="stylesheet">
 	<style type="text/css" media="screen">
 		* {
-			background: #313038;
+			background: #222222;
 			color: white;
 			font-family: 'Baloo Paaji 2';
+		}
+		svg {
+			border: solid salmon 1px;
 		}
 
 	</style>
@@ -16,22 +19,22 @@
 </head>
 
 <body>
-	<h1>Hellow World!</h1>
-	<div id='container'>
-		<p>Sample of data:</p>
+	<div>
+		<h2>Average tip by sex:</h2>
 	</div>
-	<div id='viz'>
-		
-	</div>
+	<svg height='300' width='400'>
+		<g id='viz' style='transform:translate(60px, 10px)'>
+			<g id='yAxis'></g>
+			<g id='xAxis'></g>
+		</g>
+	</svg>
 </body>
 
 
 <script>
 	// d3 code for learning purpoces
 
-	// selecting a div where JS manipulations will be happenning 
-	let container = d3.select('#container')
-	// selecting a div, where viz will be happenning
+	// selecting div, where viz will be happenning
 	let viz = d3.select('#viz')
 
 	// load data from .csv file (can be .jason)
@@ -50,11 +53,8 @@
 
 	// function to depict data in DOM
 	function showViz(data) {
-		// function to create a new div and wrtite text into it 
-		// we can call this func later or earlier in the code
-		function write (text) {
-			container.append('div').text(text)
-		}	
+
+		console.log(data)
 
 		// reformat array to group (nest) data by sex
 		let nestedData = d3.nest()
@@ -66,30 +66,51 @@
 			}
 			})
 			.entries(data)
-		// show the structure of theis new nested data object in console
+		// show the structure of this new nested data object in console
 		console.log(nestedData)
 
 		// calculate max tip
 		let max = d3.max(data, row => row.tip) 
 		console.log(max)
 
-		let scale = d3.scaleLinear()
+		// define hirisontal scale (for –– numbers, therefore linear)
+		let widthScale = d3.scaleLinear()
 			.range([0, 300])
 			.domain([0, max/2])
 
-		console.log(scale)
+		// define vertical scale (for sex –– categories, therefore categorical)
+		let positionScale = d3.scaleBand()
+			.range([0, 250])
+			.domain(data.map(row => row.sex))
+			.padding(0.3)
 
-		// bind data and div (or any othyer html container) 
+		// bind data and html (svg in tyhis case) 
 		// where the viz will be happening
-		join = viz.selectAll('div').data(nestedData)
-		
-		// depict divs with average tip by Male and Female
-		join.enter().append('div')
-			.text(d => d.key + ': ' + d.value.mean.toFixed(2))
-			.style('background-color', 'salmon')
-			.style('color', '#313038')
-			.style('margin-top', '10px')
-			.style('width', scale(d => d.value.mean))
+		join = viz.selectAll('rect').data(nestedData)
+
+		// depict divs with average tip by sex
+		join.enter()
+			.append('rect')
+			.attr('fill', 'salmon')
+			.attr('width', d => widthScale(d.value.mean))
+			.attr('height', positionScale.bandwidth())
+			.attr('y', d => positionScale(d.key))
+
+		// creaye the object for the horizontal axis
+		let xAxis = d3.axisBottom(widthScale)
+			.ticks(4)	//optional
+			.tickFormat(d => '$ '+d)	//optional
+		// depict (call) the horizontal axis object into html element with id='xAxis'
+		d3.select('#xAxis')
+			.attr('transform', 'translate(0, 250)')
+			.call(xAxis)
+
+		// creaye the object for the vertical axis
+		let yAxis = d3.axisLeft(positionScale)
+		// depict (call) the vertical axis object into html element with id='yAxis'
+		d3.select('#yAxis')
+			.attr('transform', 'translate(-2, 0)')
+			.call(yAxis)
 	}
 
 </script>
