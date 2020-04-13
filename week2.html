@@ -2,10 +2,12 @@
 <html>
 <head>
 	<title></title>
+	<link href="https://fonts.googleapis.com/css?family=Baloo+Paaji+2&display=swap" rel="stylesheet">
 	<style type="text/css" media="screen">
 		* {
 			background: #313038;
 			color: white;
+			font-family: 'Baloo Paaji 2';
 		}
 
 	</style>
@@ -22,6 +24,9 @@
 	<div id='container'>
 
 	</div>
+	<div id='viz'>
+		
+	</div>
 </body>
 
 
@@ -32,6 +37,8 @@
 
 	// selecting a div where JS manipulations will be happenning 
 	let container = d3.select('#container')
+	// selecting a div, where viz will be happenning
+	let viz = d3.select('#viz')
 
 	// load data from .csv file (can be .jason)
 	// then call function where data transformations happen
@@ -101,14 +108,12 @@
 	function write (text) {
 		container.append('div').text(text)
 	}
-
 	// data transformation with map 
 	function dataTransform (x) {
 		// multiplying the data point and 'truncating' to 2 decimals
 		x = (x * multiplyer).toFixed(2)
 		return x
 	}
-
 	// usgin reduce method (in this case to calculate the sum of all tips)
 	function meanData (data) {
 		let sum = data.reduce(function (prev, curr) {
