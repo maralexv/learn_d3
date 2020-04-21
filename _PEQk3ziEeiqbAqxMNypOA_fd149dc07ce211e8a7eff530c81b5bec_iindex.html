@@ -121,7 +121,7 @@
 	    let margin = {
 	        top: 10,
 	        bottom: 50,
-	        left: 130,
+	        left: 150,
 	        right: 10
 	    }
 	    //The body is the area that will be occupied by the bars.
@@ -173,14 +173,19 @@
 	function drawAxesAirlinesChart(airlines, scales, config){
 	  	let {xScale, yScale} = scales
 	  	let {container, margin, height} = config;
-	  	let axisX = d3.axisBottom(xScale)
-	   	             .ticks(5)
+	  	let axisX = d3.axisBottom(xScale).ticks(5)
 
 	  	container.append("g")
-	       .style("transform", `translate(${margin.left}px,${height - margin.bottom}px)`)
-	       .call(axisX)
+            .style("transform", `translate(${margin.left}px,${height - margin.bottom}px)`)
+            .style("font-size", "12px")
+            .call(axisX)
 
-	  	let axisY = //TODO: Create an axis on the left for the Y scale
+	  	let axisY = d3.axisLeft(yScale)
+        //TODO: Create an axis on the left for the Y scale
+        container.append("g")
+            .style("transform", `translate(${margin.left}px,${margin.top}px)`)
+            .style("font-size", "12px")
+            .call(axisY)
 	  	//TODO: Append a g tag to the container, translate it based on the margins and call the axisY axis to draw the left axis.
 	}
     
