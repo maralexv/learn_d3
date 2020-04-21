@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Restaurant tips stats</title>
+	<link href="https://fonts.googleapis.com/css?family=Baloo+Paaji+2&display=swap" rel="stylesheet">
+	<style type="text/css" media="screen">
+		* {
+			background: #222222;
+			color: white;
+			font-family: 'Baloo Paaji 2';
+		}
+		
+		body {
+			margin: 2em 5em;
+		}
+		
+		svg {
+			border: solid salmon 1px;
+		}
+
+	</style>
+	<script src="d3/d3.js"></script>
+<!-- <script src="https://d3js.org/d3.v5.js"></script> -->
+</head>
+
+<body>
+	<div>
+		<h1>Resaurant tips statistics</h1>
+		<div id='container'>
+			<h2>Sample of the data table:</h2>
+		</div>
+	</div>
+	<div>
+		<h2>Average tip by sex:</h2>
+	</div>
+	<svg height='300' width='400'>
+		<g id='viz' style='transform:translate(60px, 10px)'>
+			<g id='yAxis'></g>
+			<g id='xAxis'></g>
+		</g>
+	</svg>
+</body>
+
+<script>
+	// d3 code for learning purpoces
+
+	// selecting a div where JS manipulations will be happenning 
+	let container = d3.select('#container')
+
+	// selecting div, where viz will be happenning
+	let viz = d3.select('#viz')
+
+	// load data from .csv file (can be .jason)
+	// then call function where data transformations happen
+	d3.csv('tips.csv').then(dataLoaded)
+
+	// data transformations
+	function dataLoaded (data){
+		// sort the data by column (column 'tip' in this case)
+		data.sort(function (a,b) {
+			return d3.ascending(a.tip, b.tip)
+		})
+		// call function showData to actually depict data in DOM
+		showViz(data)
+	}
+
+	// function to depict data in DOM
+	function showViz(data) {
+
+		console.log(data)
+
+		// filters data... in thios case to show only rows with tips < 1.5
+		truncData = data.filter(function (row) {
+			return row.tip < 1.2
+			})
+		write(data.columns)
+		// iterate over rows of data table 
+		for (let row of truncData) {
+			// write specific data form dataset into new divs 
+			// using write function (see below)
+			write(row.total_bill +', ' 
+				+ row.tip + ', ' 
+				+ row.sex + ', ' 
+				+ row.smoker + ', ' 
+				+ row.day + ', ' 
+				+ row.time)
+			}
+
+		// function to create a new div and wrtite text into it 
+		// we can call this func later or earlier in the code
+		function write (text) {
+			container.append('div').text(text)
+		}
+
+		// reformat array to group (nest) data by sex
+		let nestedData = d3.nest()
+			.key(function(d){return d.sex})
+			.rollup(function(values){return {
+				count: values.length, 
+				total: d3.sum(values, d => parseFloat(d.tip).toFixed(2)), 
+				mean: d3.mean(values, d => parseFloat(d.tip).toFixed(2))
+			}
+			})
+			.entries(data)
+		// show the structure of this new nested data object in console
+		console.log(nestedData)
+
+		// calculate max tip
+		let max = d3.max(data, row => row.tip) 
+		console.log(max)
+
+		// define hirisontal scale (for –– numbers, therefore linear)
+		let widthScale = d3.scaleLinear()
+			.range([0, 300])
+			.domain([0, max/2])
+
+		// define vertical scale (for sex –– categories, therefore categorical)
+		let positionScale = d3.scaleBand()
+			.range([0, 250])
+			.domain(data.map(row => row.sex))
+			.padding(0.3)
+
+		// bind data and html (svg in tyhis case) 
+		// where the viz will be happening
+		join = viz.selectAll('rect').data(nestedData)
+
+		// depict divs with average tip by sex
+		join.enter()
+			.append('rect')
+			.attr('fill', 'salmon')
+			.attr('width', d => widthScale(d.value.mean))
+			.attr('height', positionScale.bandwidth())
+			.attr('y', d => positionScale(d.key))
+
+		// creaye the object for the horizontal axis
+		let xAxis = d3.axisBottom(widthScale)
+			.ticks(4)	//optional
+			.tickFormat(d => '$ '+d)	//optional
+		// depict (call) the horizontal axis object into html element with id='xAxis'
+		d3.select('#xAxis')
+			.attr('transform', 'translate(0, 250)')
+			.call(xAxis)
+
+		// creaye the object for the vertical axis
+		let yAxis = d3.axisLeft(positionScale)
+		// depict (call) the vertical axis object into html element with id='yAxis'
+		d3.select('#yAxis')
+			.attr('transform', 'translate(0, 0)')
+			.call(yAxis)
+	}
+
+</script>
+
+</html>
