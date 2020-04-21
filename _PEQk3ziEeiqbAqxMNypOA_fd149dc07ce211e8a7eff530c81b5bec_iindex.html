@@ -121,7 +121,7 @@
 	    let margin = {
 	        top: 10,
 	        bottom: 50,
-	        left: 150,
+	        left: 130,
 	        right: 10
 	    }
 	    //The body is the area that will be occupied by the bars.
@@ -177,14 +177,14 @@
 
 	  	container.append("g")
             .style("transform", `translate(${margin.left}px,${height - margin.bottom}px)`)
-            .style("font-size", "12px")
+            // .style("font-size", "12px")
             .call(axisX)
 
 	  	let axisY = d3.axisLeft(yScale)
         //TODO: Create an axis on the left for the Y scale
         container.append("g")
             .style("transform", `translate(${margin.left}px,${margin.top}px)`)
-            .style("font-size", "12px")
+            // .style("font-size", "12px")
             .call(axisY)
 	  	//TODO: Append a g tag to the container, translate it based on the margins and call the axisY axis to draw the left axis.
 	}
